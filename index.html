@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css"> 
+    <link href="css/bootstrap4.min.css" rel="stylesheet" type="text/css"> 
+</head>
+<body>
+    <form>
+        <label>What are you looking for?</label>
+        <input type="text" name="search" id="searchItem" class="form-control search"/>
+        <input type="button" class="submit" value="Search" onclick="getResult()"/>
+    </form>
+    <div id="searchres">
+    </div>
+    <script src="js/axios.js"></script>
+    <script src="js/bootstrap4.min.js"></script>
+    <script src="js/jquery-3.3.1.slim.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script>
+        
+        function getResult(){
+            var searchItem = document.getElementById("searchItem").value;
+            var searchres = document.getElementById("searchres");
+            // var url = 'https://api.pexels.com/v1/search?query=ball+query&per_page=20&page=1';
+            var token = '563492ad6f917000010000013cc6d3ad29014133b6d2ddf371515f6f';
+            axios.get(
+                'https://api.pexels.com/v1/search?query=' + searchItem + '+query&per_page=20&page=1',
+                {headers: {
+                    "Authorization" : token
+                }
+                }
+            )
+            .then((response, status) => {
+                var response = response.data;
+                console.log(response);
+                return searchres.innerHTML = '<pre>' + JSON.stringify(response, null, '\t') + '</pre>';
+            },
+                (error) => {
+                var status = error.response.status
+                }
+            );
+        }
+    </script>
+</body>
+</html>
