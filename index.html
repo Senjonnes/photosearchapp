@@ -4,46 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link href="css/style.css" rel="stylesheet" type="text/css"> 
-    <link href="css/bootstrap4.min.css" rel="stylesheet" type="text/css"> 
+    <title>PWA</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        #app{
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <form>
-        <label>What are you looking for?</label>
-        <input type="text" name="search" id="searchItem" class="form-control search"/>
-        <input type="button" class="submit" value="Search" onclick="getResult()"/>
-    </form>
-    <div id="searchres">
+    <div class="container" id="app">
+        <h3>Search Images</h3>
+        <input type="text" class="form-control" v-model="text">
+        <button class="btn btn-success" v-on:click="search">Search</button>
+
+        <div class="row">
+            <div class="col-md-6" v-for="image in images">
+                <img :src="image.src.medium" alt="">
+                <p>Photographer: {{image.photographer}}</p>
+            </div>
+        </div>
+
+
     </div>
+    
+    <script src="js/vue.js"></script>
     <script src="js/axios.js"></script>
-    <script src="js/bootstrap4.min.js"></script>
-    <script src="js/jquery-3.3.1.slim.min.js"></script>
-    <script src="js/jquery.min.js"></script>
     <script>
-        
-        function getResult(){
-            var searchItem = document.getElementById("searchItem").value;
-            var searchres = document.getElementById("searchres");
-            // var url = 'https://api.pexels.com/v1/search?query=ball+query&per_page=20&page=1';
-            var token = '563492ad6f917000010000013cc6d3ad29014133b6d2ddf371515f6f';
-            axios.get(
-                'https://api.pexels.com/v1/search?query=' + searchItem + '+query&per_page=20&page=1',
-                {headers: {
-                    "Authorization" : token
-                }
-                }
-            )
-            .then((response, status) => {
-                var response = response.data;
-                console.log(response);
-                return searchres.innerHTML = '<pre>' + JSON.stringify(response, null, '\t') + '</pre>';
+        new Vue({
+            el: '#app',
+            data: {
+                text: 'hello',
+                images: []
             },
-                (error) => {
-                var status = error.response.status
+            methods:{
+                search(){
+                    this.images = [];
+                    axios.get("https://api.pexels.com/v1/search?query="+this.text+"&per_page=20", {
+                        headers: {
+                            Authorization: "563492ad6f917000010000013cc6d3ad29014133b6d2ddf371515f6f"
+                        }
+                    })
+                    .then(response=>{
+                        console.log(response.data);
+                        for(var i=0; i < response.data.photos.length; i++){
+                            //console.log(i);
+                            this.images.push(response.data.photos[i]);
+                        }
+                        //images = response.data;
+                        console.log(this.images);
+                    });
                 }
-            );
-        }
+            },
+
+            mounted(){
+                if (!('serviceWorker' in navigator)) {
+                    // service workers not supported 😣
+                    return
+                }
+
+              navigator.serviceWorker.register('/worker.js').then(
+                () => {
+                  // registered!
+                },
+                err => {
+                  console.error('SW registration failed! 😱', err)
+                }
+              )
+            }
+
+        });
     </script>
+
 </body>
 </html>
