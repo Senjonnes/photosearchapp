@@ -38,7 +38,7 @@
         new Vue({
             el: '#app',
             data: {
-                text: '',
+                text: 'asd',
                 images: []
             },
             methods:{
@@ -63,16 +63,16 @@
 
             mounted(){
                 if (!('serviceWorker' in navigator)) {
-                    // service workers not supported 😣
+                    // service workers not supported 
                     return
                 }
 
-              navigator.serviceWorker.register('/worker.js').then(
+              navigator.serviceWorker.register('worker.js').then(
                 () => {
                   // registered!
                 },
                 err => {
-                  console.error('SW registration failed! 😱', err)
+                  console.error('SW registration failed! ', err)
                 }
               )
             }

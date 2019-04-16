@@ -1,7 +1,7 @@
 self.addEventListener('install', event => {
   event.waitUntil(
     caches
-      .open('my-pwa-site')
+      .open('my-pwa-site') //a name for your cache
       .then(cache =>
         cache.addAll([
           'js/axios.js',
